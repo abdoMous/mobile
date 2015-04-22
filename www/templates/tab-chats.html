@@ -1,0 +1,12 @@
+<ion-view view-title="Projects">
+  <ion-content>
+    <ion-list>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="project in projects" type="item-text-wrap" href="#/tab/project/{{project.id}}">
+        <!--<img ng-src="{{chat.face}}">-->
+        <h2>{{project.title}}</h2>
+        <p>{{project.todo}} uncomplited tasks</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

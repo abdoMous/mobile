@@ -1,0 +1,70 @@
+<ion-view view-title="{{project.title}}">
+  <ion-content class="padding">
+    <ion-list>
+      <ion-item class="item-text-wrap item-remove-animate item-avatar item-icon-right">
+        write second oage qsq scsdsdfsd profep sdfsep fzefzef zefef
+        <ion-option-button class="button-balanced" ng-click="done(project)">
+          <i class="icon ion-android-done"></i>
+        </ion-option-button>
+        <ion-option-button class="button-positive" ng-click="edit(project)">
+          <i class="icon ion-edit"></i>
+        </ion-option-button>
+        <ion-option-button class="button-assertive" ng-click="remove(project)">
+          <i class="icon ion-android-delete"></i>
+        </ion-option-button>
+      </ion-item>
+    </ion-list>
+    <button class="button button-positive row-center" ng-click="add()"><i class="icon ion-android-add"></i> Add Task</button>
+  </ion-content>
+</ion-view>
+
+        <!-- removing modal -->
+<script id="taskRemoving.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar>
+      <h1 class="title">Removing Task</h1>
+    </ion-header-bar>
+    <ion-content class="padding">
+      <p>Task added by <b>henka</b> at <b>2015-20-42 8:00AM</b></p>
+      <p>Do you really want to remove this Task?</p>
+      <div class="row">
+        <button class="button button-assertive col" ng-click="remove(project)">Remove</button>
+        <button class="button button-calm col" ng-click="hide()">cancel</button>
+      </div>
+    </ion-content>
+  </ion-modal-view>
+</script>
+
+        <!-- editing modal -->
+<script id="taskEditing.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar>
+      <h1 class="title">Edit Task</h1>
+    </ion-header-bar>
+    <ion-content class="padding">
+      <p>Task added by <b>henka</b> at <b>2015-20-42 8:00AM</b></p>
+      <input type="text"/>
+      <div class="row">
+        <button class="button button-positive col" ng-click="add(project)">Edit</button>
+        <button class="button button-calm col" ng-click="hide()">cancel</button>
+      </div>
+    </ion-content>
+  </ion-modal-view>
+</script>
+
+    <!-- adding modal -->
+<script id="taskAdding.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar>
+      <h1 class="title">Add Task</h1>
+    </ion-header-bar>
+    <ion-content class="padding">
+      <p>Add ing Add ing</p>
+      <input type="text" ng-model="project.title"/>
+      <div class="row">
+        <button class="button button-positive col" ng-click="edit(project)">Edit</button>
+        <button class="button button-calm col" ng-click="hide()">cancel</button>
+      </div>
+    </ion-content>
+  </ion-modal-view>
+</script>
