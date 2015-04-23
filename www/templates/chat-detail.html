@@ -1,15 +1,16 @@
 <ion-view view-title="{{project.title}}">
   <ion-content class="padding">
     <ion-list>
-      <ion-item class="item-text-wrap item-remove-animate item-avatar item-icon-right">
-        write second oage qsq scsdsdfsd profep sdfsep fzefzef zefef
-        <ion-option-button class="button-balanced" ng-click="done(project)">
+      <ion-item ng-repeat="task in Tasks" class="item-text-wrap item-remove-animate item-avatar item-icon-right">
+        <span ng-if="!task.done">{{task.title}}</span>
+        <del ng-if="task.done">{{task.title}}</del>
+        <ion-option-button class="button-balanced" ng-click="done(task)">
           <i class="icon ion-android-done"></i>
         </ion-option-button>
-        <ion-option-button class="button-positive" ng-click="edit(project)">
+        <ion-option-button class="button-positive" ng-click="edit(task)">
           <i class="icon ion-edit"></i>
         </ion-option-button>
-        <ion-option-button class="button-assertive" ng-click="remove(project)">
+        <ion-option-button class="button-assertive" ng-click="remove(task)">
           <i class="icon ion-android-delete"></i>
         </ion-option-button>
       </ion-item>
@@ -28,7 +29,7 @@
       <p>Task added by <b>henka</b> at <b>2015-20-42 8:00AM</b></p>
       <p>Do you really want to remove this Task?</p>
       <div class="row">
-        <button class="button button-assertive col" ng-click="remove(project)">Remove</button>
+        <button class="button button-assertive col" ng-click="remove(removingModal.task)">Remove</button>
         <button class="button button-calm col" ng-click="hide()">cancel</button>
       </div>
     </ion-content>
@@ -43,9 +44,9 @@
     </ion-header-bar>
     <ion-content class="padding">
       <p>Task added by <b>henka</b> at <b>2015-20-42 8:00AM</b></p>
-      <input type="text"/>
+      <input type="text" ng-model="editingModal.task.title"/>
       <div class="row">
-        <button class="button button-positive col" ng-click="add(project)">Edit</button>
+        <button class="button button-positive col" ng-click="edit(editingModal.task)">Edit</button>
         <button class="button button-calm col" ng-click="hide()">cancel</button>
       </div>
     </ion-content>
@@ -60,9 +61,9 @@
     </ion-header-bar>
     <ion-content class="padding">
       <p>Add ing Add ing</p>
-      <input type="text" ng-model="project.title"/>
+      <input type="text" ng-model="addingModal.task.title"/>
       <div class="row">
-        <button class="button button-positive col" ng-click="edit(project)">Edit</button>
+        <button class="button button-positive col" ng-click="add(task)">Add</button>
         <button class="button button-calm col" ng-click="hide()">cancel</button>
       </div>
     </ion-content>

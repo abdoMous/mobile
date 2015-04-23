@@ -3,15 +3,22 @@ angular.module('starter.controllers', [])
 .controller('DashCtrl', function($scope) {})
 
 .controller('ProjectsCtrl', function($scope, Projects) {
-  $scope.projects = Projects.all();
-  $scope.remove = function(project) {
-    Projects.remove(project);
-  }
+      Projects.all().then(function(projects){
+        $scope.projects = projects
+      })
 })
 
-.controller('ProjectDetailCtrl', function($scope, $stateParams, Projects,$ionicModal) {
-  $scope.project = Projects.get($stateParams.projectId);
+.controller('ProjectDetailCtrl', function($scope, $stateParams, Projects,Tasks,$ionicModal,$cordovaSQLite) {
+  $scope.project_id = $stateParams.projectId;
 
+      function refresh(){
+        Tasks.getByProjectId($scope.project_id).then(function(tasks){
+          $scope.Tasks = tasks;
+        })
+      }
+
+      refresh();
+      //return Tasks;
   //removing item modal
   $ionicModal.fromTemplateUrl('taskRemoving.html',{
     scope: $scope,
@@ -36,21 +43,36 @@ angular.module('starter.controllers', [])
     $scope.addingModal = modal;
   });
 
-  $scope.done = function(project){
-    alert(project.title + " Done!")
+  $scope.done = function(task){
+    Tasks.done(task).then(function(res){
+      console.log(res);
+      refresh()
+    })
   }
-  $scope.edit = function(project){
-    if(!$scope.editingModal.isShown())
-      $scope.editingModal.show()
-    else
-      alert(project.title + " Edited!")
+  $scope.edit = function(task){
+    if(!$scope.editingModal.isShown()){
+      $scope.editingModal.show();
+      $scope.editingModal.task = {id:task.id,title:task.title}
+    }else{
+      Tasks.edit($scope.editingModal.task).then(function(res){
+        console.log("res", res);
+        refresh()
+        $scope.editingModal.hide();
+      })
+    }
 
   }
-  $scope.remove = function(project){
-    if(!$scope.removingModal.isShown())
+  $scope.remove = function(task){
+    if(!$scope.removingModal.isShown()){
       $scope.removingModal.show()
+      $scope.removingModal.task = {id : task.id};
+    }
     else
-      alert(project.title + " Removed!")
+      Tasks.remove($scope.removingModal.task).then(function(res){
+        //console.log("res",res);
+        $scope.removingModal.hide()
+        refresh();
+      });
   }
 
   $scope.hide = function(){
@@ -59,13 +81,28 @@ angular.module('starter.controllers', [])
     if($scope.addingModal.isShown()) $scope.addingModal.hide();
   }
 
-  $scope.add = function(){
-    $scope.addingModal.show()
+  $scope.add = function(task){
+    if(!$scope.addingModal.isShown()){
+      $scope.addingModal.show()
+      $scope.addingModal.task = {project_id:$scope.project_id}
+    }
+    else{
+      Tasks.add($scope.addingModal.task)
+          .then(function(res){
+            $scope.addingModal.hide()
+            refresh()
+          });;
+    }
   }
 })
 
-.controller('AccountCtrl', function($scope) {
+.controller('AccountCtrl', function($scope,Tasks) {
   $scope.settings = {
     enableFriends: true
   };
+  $scope.dropTasks = function(){
+    Tasks.drop().then(function(res){
+      alert("Table Tasks droped!")
+    })
+  }
 });
