@@ -15,9 +15,38 @@ $royal:                           #886aea !default;
 $dark:                            #444 !default;
 */
 
+//.button-float{
+//  width: 300px;
+//  height: 300px;
+//  padding-top: 14px;
+//  font-size: 4em;
+//  background: $positive !important;
+//  color:white !important;
+//  z-index: 12 !important;
+//  position: absolute !important;
+//  bottom: 10px !important;
+//  left: 10px !important;
+//  border-radius: 50% !important;
+//  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26) !important;
+//  -webkit-transform: translate3d(0, 0, 0) !important;
+//  transform: translate3d(0, 0, 0) !important;
+//  -webkit-transition: 0.2s linear !important;
+//  transition: 0.2s linear !important;
+//  -webkit-transition-property: -webkit-transform, all !important;
+//  transition-property: transform, all !important;
+//
+//}
+//
+//.button-float:hover{
+//  -webkit-transform: translate3d(0, -1px, 0)  !important;
+//  transform: translate3d(0, -1px, 0) !important;
+//  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4) !important;
+//
+//}
+
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 // Include all of Ionic
-@import "www/lib/ionic/scss/ionic";
+@import "../www/lib/ionic/scss/ionic";
 

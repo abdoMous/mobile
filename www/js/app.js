@@ -7,7 +7,8 @@
 // 'starter.controllers' is found in controllers.js
 var db
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','ngCordova'])
-.run(function($ionicPlatform,$cordovaSQLite,DB,Projects) {
+.run(function($rootScope,$ionicPlatform,$cordovaSQLite,DB,Projects) {
+      $rootScope.hostname = '192.168.1.33';
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -102,10 +103,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','n
         {
           name:'Tasks',
           columns:[
-            {name:'id',type:'integer primary key'},
+            {name:'id',type:'text primary key'},
             {name:'title',type:'text'},
             {name:'done',type:'integer'},
             {name:'project_id',type:'integer'},
+            {name:'flag',type:'integer'},
+            {name:'_v',type:'text'},
           ]
         },{
           name:'Projects',

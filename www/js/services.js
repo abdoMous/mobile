@@ -43,7 +43,9 @@ angular.module('starter.services', [])
       };
 
       self.fetch = function(result) {
-        return result.rows.item(0);
+          if(result.rows.length)
+            return result.rows.item(0);
+          return null
       };
       self.drop = function(){
 
@@ -71,7 +73,7 @@ angular.module('starter.services', [])
       }
       return self;
 })
-    .factory('Tasks', function(DB) {
+    .factory('Tasks', function(DB,$q) {
       var self = this;
 
       self.all = function() {
@@ -80,8 +82,19 @@ angular.module('starter.services', [])
               return DB.fetchAll(result);
             });
       };
+      self.changedItems = function(){
+          return DB.query('SELECT * FROM Tasks WHERE flag != 0')
+              .then(function(result){
+                  return DB.fetchAll(result);
+              });
+      }
+      self.synced = function(_v){
+          DB.query("UPDATE Tasks SET flag = ?,_v = ? WHERE flag = ? OR flag = ?;",[0,_v,1,2])
+          DB.query("DELETE FROM Tasks WHERE flag = ?",[3]);
+          //return DB.query("UPDATE Tasks SET flag = ?,_v = ? WHERE flag != ?;",[0,_v,0])
+      }
       self.getByProjectId = function(project_id){
-        return DB.query('SELECT * FROM Tasks WHERE project_id = ?',[project_id])
+        return DB.query('SELECT * FROM Tasks WHERE project_id = ? AND flag != ?',[project_id,3])
             .then(function(res){
               return DB.fetchAll(res)
             })
@@ -93,20 +106,66 @@ angular.module('starter.services', [])
             });
       };
       self.add = function(task){
-        return DB.query("INSERT INTO Tasks (title,project_id) VALUES (?,?)",[task.title,task.project_id])
+          //set flag to 1 "Created"
+          if(task._v){//from server
+              return DB.query("INSERT INTO Tasks (id,title,project_id,flag,_v) VALUES (?,?,?,?,?)",[task.id,task.title,task.project_id,0,task._v])
+          }
+          return DB.query("INSERT INTO Tasks (id,title,project_id,flag) VALUES (?,?,?,?)",[task.id,task.title,task.project_id,1])
+
       }
       self.remove = function(task){
         console.log("task",task);
-        return DB.query("DELETE FROM Tasks WHERE id = ?",[task.id]);
+          if(task._v){//Set flag to 3 "Deleted"
+            return DB.query("UPDATE Tasks SET flag = ? WHERE id = ?;",[3,task.id])
+          }else{//delete item completely
+            return DB.query("DELETE FROM Tasks WHERE id = ?",[task.id]);
+          }
       }
-      self.edit = function(task){
-        return DB.query("UPDATE Tasks SET title = ? WHERE id = ?;",[task.title,task.id])
+        self.edit = function(task){
+            console.log(task);
+            var defer = $q.defer();
+            //if this item synchronized before them set flag to 2 "Updated" else 1 "Created"
+            DB.query("UPDATE Tasks SET title = ?,flag = ? WHERE id = ?;",
+                [task.title,
+                    (task._v == null ? 1:2),
+                    task.id])
+                .then(function(res){
+                    defer.resolve({res:res,task:task})
+                })
+
+
+            return defer.promise;
+
+        }
+        self.done = function(task){
+        return DB.query("UPDATE Tasks SET done = ?,flag = ? WHERE id = ?",[task.done? 0 : 1,(task._v == null ? 1:2),task.id])
       }
-      self.done = function(task){
-        return DB.query("UPDATE Tasks SET done = ? WHERE id = ?",[task.done? 0 : 1,task.id])
-      }
+        self.exportChanges = function(){
+            return DB.query('SELECT * FROM Tasks WHERE flag > 0')
+                .then(function(result){
+                    return DB.fetchAll(result);
+                });
+        }
       self.drop = function(){
         return DB.query("DROP TABLE IF EXISTS Tasks")
       }
+
       return self;
-    });
+    })
+
+    .factory('$localstorage', ['$window', function($window) {
+        return {
+            set: function(key, value) {
+                $window.localStorage[key] = value;
+            },
+            get: function(key, defaultValue) {
+                return $window.localStorage[key] || defaultValue;
+            },
+            setObject: function(key, value) {
+                $window.localStorage[key] = JSON.stringify(value);
+            },
+            getObject: function(key) {
+                return JSON.parse($window.localStorage[key] || '{}');
+            }
+        }
+    }]);
